@@ -1,0 +1,15 @@
+// This function allows to take screenshot and saved the image on device
+
+
+    fun takeScreen(nameTest: String){
+        var mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val sdf = SimpleDateFormat("-hh_mm_ss")
+        var currentDate = sdf.format(Date())
+        currentDate.toString()
+
+        Thread.sleep(2000)
+        val filename = "$nameTest${currentDate}.jpg"
+        val path = "/storage/emulated/0/DCIM/UiTest/$filename"
+        val file = File(path)
+        mDevice.takeScreenshot(file)
+    }
