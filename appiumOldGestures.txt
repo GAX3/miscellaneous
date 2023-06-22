@@ -1,0 +1,49 @@
+    //swipe in all directions (old version)
+    fun swipeScreen(dir: Direction?) {
+        println("swipeScreen(): dir: '$dir'") // always log your actions
+        val animationTime = 250
+        val pressTime = 250
+        val edgeBorder = 10
+        val pointOptionStart: PointOption<*>?
+        var pointOptionEnd: PointOption<*>? = null
+        val dims = driver!!.manage().window().size
+        pointOptionStart = PointOption.point(dims.width / 2, dims.height / 2)
+
+        when(dir){
+            Direction.DOWN -> {
+                pointOptionEnd = PointOption.point(dims.width / 2, dims.height - edgeBorder)
+            }
+            Direction.UP -> {
+                pointOptionEnd = PointOption.point(dims.width / 2, edgeBorder)
+            }
+            Direction.LEFT -> {
+                pointOptionEnd = PointOption.point(edgeBorder, dims.height / 2)
+            }
+            Direction.RIGHT -> {
+                pointOptionEnd = PointOption.point(dims.width - edgeBorder, dims.height / 2)
+            }
+            else -> {
+                IllegalArgumentException("swipeScreen(): dir: $dir Not supported")
+            }
+        }
+        try {
+            TouchAction(driver)
+                .press(pointOptionStart) // a bit more reliable when we add small wait
+                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(pressTime.toLong())))
+                .moveTo(pointOptionEnd)
+                .release().perform()
+        } catch (e: Exception) {
+            System.err.println(
+                """
+            swipeScreen(): TouchAction FAILED
+            ${e.message}
+            """.trimIndent()
+            )
+            return
+        }
+        try{
+            Thread.sleep(animationTime.toLong())
+        }catch (e: InterruptedException){
+            println("$e")
+        }
+    }
